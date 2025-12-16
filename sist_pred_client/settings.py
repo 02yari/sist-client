@@ -74,6 +74,14 @@ TEMPLATES = [
     },
 ]
 
+
+# Redirección cuando el usuario no está autenticado
+LOGIN_URL = 'usuarios:login'
+# Redirección después de cerrar sesión
+LOGOUT_REDIRECT_URL = 'usuarios:login'
+
+
+
 WSGI_APPLICATION = 'sist_pred_client.wsgi.application'
 
 
