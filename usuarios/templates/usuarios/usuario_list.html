@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-gray-100">
+
+<h1 class="text-2xl font-bold mb-4">Usuarios</h1>
+
+<a href="{% url 'usuarios:crear' %}"
+   class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">
+   Nuevo Usuario
+</a>
+
+<table class="w-full bg-white rounded shadow">
+    <thead class="bg-gray-200">
+        <tr>
+            <th class="p-2">Usuario</th>
+            <th class="p-2">Rol</th>
+            <th class="p-2">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr class="border-t">
+            <td class="p-2">{{ u.username }}</td>
+            <td class="p-2">{{ u.get_rol_display }}</td>
+            <td class="p-2">
+                <a href="{% url 'usuarios:editar' u.id %}" class="text-blue-600">Editar</a>
+                |
+                <a href="{% url 'usuarios:eliminar' u.id %}" class="text-red-600">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
