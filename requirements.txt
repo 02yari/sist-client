@@ -1,3 +1,6 @@
+
 Django
 pandas
 openpyxl
+scikit-learn
+joblib
