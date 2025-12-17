@@ -105,3 +105,55 @@ def predecir_abandono(request, cliente_id):
         'cliente': cliente.nombre,
         'probabilidad_abandono': round(probabilidad * 100, 2)
     })
+
+def calcular_nivel_riesgo(request, cliente_id):
+    if request.user.rol != 'admin':
+        return HttpResponseForbidden("No tienes permiso para esto")
+    
+    try:
+        cliente = Cliente.objects.get(id=cliente_id)
+    except Cliente.DoesNotExist:
+        return JsonResponse({'error': 'Cliente no encontrado'}, status=404)
+
+    # Cargar modelo
+    try:
+        modelo = joblib.load('predicciones/modelo_cliente.pkl')
+    except FileNotFoundError:
+        return JsonResponse({'error': 'Modelo no entrenado'}, status=400)
+
+    # Preparar datos del cliente como dataframe
+    df = pd.DataFrame([{
+        'telefono': cliente.telefono,
+        'estado': cliente.estado,
+        'nivel_riesgo': cliente.nivel_riesgo,  # si ya existía, para consistencia
+    }])
+
+    df = pd.get_dummies(df, columns=['estado', 'nivel_riesgo'], drop_first=True)
+
+    # Asegurarse que las columnas coincidan con el modelo
+    modelo_cols = modelo.feature_names_in_
+    for col in modelo_cols:
+        if col not in df.columns:
+            df[col] = 0
+    df = df[modelo_cols]
+
+    # Predicción
+    probabilidad = modelo.predict_proba(df)[:, 1][0]
+
+    # Calcular nivel de riesgo
+    if probabilidad < 0.3:
+        nivel = "Bajo"
+    elif probabilidad < 0.6:
+        nivel = "Medio"
+    else:
+        nivel = "Alto"
+
+    # Guardar en el cliente (opcional)
+    cliente.nivel_riesgo = nivel
+    cliente.save()
+
+    return JsonResponse({
+        'cliente': cliente.nombre,
+        'probabilidad_abandono': round(probabilidad*100,2),
+        'nivel_riesgo': nivel
+    })
