@@ -13,6 +13,11 @@ from .forms import UsuarioForm
 from .mixins import AdminRequiredMixin
 from .decorators import role_required
 
+from usuarios.models import Usuario
+
+def index(request):
+    usuarios = Usuario.objects.all()
+    return render(request, 'index.html', {'usuarios': usuarios})
 class CustomLoginView(LoginView):
     template_name = 'usuarios/login.html'
 

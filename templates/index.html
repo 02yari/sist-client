@@ -24,7 +24,20 @@
     <div class="container">
         <h1>Bienvenido al Sistema</h1>
         <ul>
-            <li><a href="/usuarios_list/">Usuarios</a></li>
+        {% for u in usuarios %}
+            <li>
+            {{ u.username }}
+            <a href="{% url 'usuarios:editar' u.id %}">Editar</a>
+            {% if request.user.rol == 'admin' %}
+                <a href="{% url 'usuarios:eliminar' u.id %}">Eliminar</a>
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+
+        <ul>
+            <li><a href="/usuarios/login/">Login</a></li>
+            <li><a href="/usuarios/">Usuarios</a></li>
             <li><a href="/clientes/">Clientes</a></li>
             <li><a href="/predicciones/">Predicciones</a></li>
             <li><a href="/chatbot/">Chatbot</a></li>

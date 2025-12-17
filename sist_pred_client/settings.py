@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'chatbot',
 ]
 
-#modelo usuario
+# Modelo de usuario personalizado
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
 MIDDLEWARE = [

@@ -18,12 +18,12 @@ from django.contrib import admin
 from django.urls import include, path
 
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 
 # Función 'inicio' 
-def inicio(request):
-    return redirect('usuarios:login')
+
 urlpatterns = [
-    path('', lambda request: render(request, 'index.html'), name='index'),
+    path('', login_required(lambda request: render(request, 'index.html')), name='index'),
     path('admin/', admin.site.urls),
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', include('dashboard.urls')),
