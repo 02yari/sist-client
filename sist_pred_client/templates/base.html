@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema de Predicción de Clientes{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{% block header %}Bienvenido a Sist-Client{% endblock %}</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'dashboard:index' %}">Dashboard</a></li>
+            <li><a href="{% url 'clientes:index' %}">Clientes</a></li>
+            <li><a href="{% url 'predicciones:index' %}">Predicciones</a></li>
+            <li><a href="{% url 'usuarios:index' %}">Usuarios</a></li>
+            <li><a href="{% url 'chatbot:index' %}">Chatbot</a></li>
+        </ul>
+    </nav>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>{% block footer %}© 2025{% endblock %}</footer>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

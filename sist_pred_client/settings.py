@@ -59,7 +59,7 @@ ROOT_URLCONF = 'sist_pred_client.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'sist_pred_client' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
