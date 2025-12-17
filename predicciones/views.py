@@ -1,14 +1,12 @@
 from django.shortcuts import render
-
 # Protección de vistas con login_required
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, roc_auc_score
 import joblib
+from .utils import explicar_riesgo
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from clientes.models import Cliente
@@ -157,3 +155,22 @@ def calcular_nivel_riesgo(request, cliente_id):
         'probabilidad_abandono': round(probabilidad*100,2),
         'nivel_riesgo': nivel
     })
+def explicar_riesgo(probabilidad):
+    """
+    Devuelve un texto explicativo del riesgo del cliente según la probabilidad.
+    """
+    if probabilidad < 0.3:
+        nivel = "Bajo"
+    elif probabilidad < 0.6:
+        nivel = "Medio"
+    else:
+        nivel = "Alto"
+    
+    return f"Probabilidad: {probabilidad:.2f} → Nivel: {nivel}"
+
+
+def detalle_prediccion(request, cliente_id):
+    cliente = Cliente.objects.get(pk=cliente_id)
+    probabilidad = cliente.probabilidad_abandono  # asumimos que ya está calculada
+    resumen = explicar_riesgo(probabilidad)
+    return render(request, 'predicciones/detalle.html', {'cliente': cliente, 'resumen': resumen})
