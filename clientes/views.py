@@ -1,15 +1,17 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib import messages
-from .models import Cliente
-from .forms import ClienteForm
-from django.urls import reverse_lazy
 from .decorators import role_required
+from .forms import ClienteForm
+from .models import Cliente
 import pandas as pd
 import re
-from django.core.exceptions import PermissionDenied
+
 
 # Protección de vistas con login_required
 from django.contrib.auth.decorators import login_required
@@ -133,10 +135,30 @@ def cliente_delete(request, pk):
 
 # Protege todas las vistas con login_required
 @method_decorator(login_required, name='dispatch')
-class ClienteListView(ListView):
+class ClienteListView(LoginRequiredMixin, ListView):
     model = Cliente
     template_name = 'clientes/list.html'
     context_object_name = 'clientes'
+    paginate_by = 10 
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Obtener parámetros de búsqueda desde GET
+        nombre = self.request.GET.get('nombre', '')
+        email = self.request.GET.get('email', '')
+        estado = self.request.GET.get('estado', '')
+        nivel_riesgo = self.request.GET.get('nivel_riesgo', '')
+
+        if nombre:
+            queryset = queryset.filter(nombre__icontains=nombre)
+        if email:
+            queryset = queryset.filter(email__icontains=email)
+        if estado:
+            queryset = queryset.filter(estado__icontains=estado)
+        if nivel_riesgo:
+            queryset = queryset.filter(nivel_riesgo__icontains=nivel_riesgo)
+
+        return queryset.order_by('nombre')
 
 @method_decorator(login_required, name='dispatch')
 class ClienteCreateView(CreateView):

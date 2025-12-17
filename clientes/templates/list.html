@@ -1,4 +1,12 @@
 <h1 class="text-2xl font-bold mb-4">Lista de Clientes</h1>
+<form method="get" class="mb-4 flex gap-2">
+    <input type="text" name="nombre" placeholder="Buscar por nombre" value="{{ request.GET.nombre }}" class="border rounded px-2 py-1">
+    <input type="text" name="email" placeholder="Buscar por email" value="{{ request.GET.email }}" class="border rounded px-2 py-1">
+    <input type="text" name="estado" placeholder="Buscar por estado" value="{{ request.GET.estado }}" class="border rounded px-2 py-1">
+    <input type="text" name="nivel_riesgo" placeholder="Buscar por nivel de riesgo" value="{{ request.GET.nivel_riesgo }}" class="border rounded px-2 py-1">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded">Buscar</button>
+</form>
+
 
 {% if request.user.rol == 'admin' %}
     <a href="{% url 'clientes:create' %}" class="bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">
@@ -39,3 +47,28 @@
         {% endfor %}
     </tbody>
 </table>
+<div class="mt-4">
+    {% if is_paginated %}
+        <div class="flex gap-2">
+            {% if page_obj.has_previous %}
+                <a href="?{% if request.GET.nombre %}nombre={{ request.GET.nombre }}&{% endif %}
+                          {% if request.GET.email %}email={{ request.GET.email }}&{% endif %}
+                          {% if request.GET.estado %}estado={{ request.GET.estado }}&{% endif %}
+                          {% if request.GET.nivel_riesgo %}nivel_riesgo={{ request.GET.nivel_riesgo }}&{% endif %}
+                          page={{ page_obj.previous_page_number }}" 
+                   class="px-2 py-1 bg-gray-200 rounded">Anterior</a>
+            {% endif %}
+
+            <span class="px-2 py-1 bg-gray-100 rounded">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?{% if request.GET.nombre %}nombre={{ request.GET.nombre }}&{% endif %}
+                          {% if request.GET.email %}email={{ request.GET.email }}&{% endif %}
+                          {% if request.GET.estado %}estado={{ request.GET.estado }}&{% endif %}
+                          {% if request.GET.nivel_riesgo %}nivel_riesgo={{ request.GET.nivel_riesgo }}&{% endif %}
+                          page={{ page_obj.next_page_number }}" 
+                   class="px-2 py-1 bg-gray-200 rounded">Siguiente</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
