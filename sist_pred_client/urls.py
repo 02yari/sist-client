@@ -28,8 +28,13 @@ urlpatterns = [
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('clientes/', include('clientes.urls')),
+<<<<<<< HEAD
     path('predicciones/', include('predicciones.urls')),
     path('chatbot/', include('chatbot.urls')),
+=======
+    path('chatbot/', include('chatbot.urls')),
+
+>>>>>>> 5b34b49df5170eb9918c1e83213a49a72b55b318
 ]
 
 # sist_pred_client
