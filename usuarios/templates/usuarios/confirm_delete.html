@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Usuario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+<h1 class="text-xl mb-4">¿Eliminar usuario {{ object.username }}?</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <button class="bg-red-600 text-white px-4 py-2 rounded">
+        Sí, eliminar
+    </button>
+    <a href="{% url 'usuarios:listar' %}" class="ml-4">Cancelar</a>
+</form>
+
+</body>
+</html>
