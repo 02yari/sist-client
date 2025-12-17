@@ -1,28 +1,197 @@
-<!-- templates/index.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio - Sistema Central</title>
+    <title>Dashboard - Sistema Central</title>
+
+    <!-- Hacemos que sea responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Tailwind CSS -->
+
+    <!-- Tailwind compilado -->
     <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <div class="container mx-auto p-8 bg-white rounded shadow max-w-md mt-10">
-        <h1 class="text-center text-2xl font-bold mb-6">Bienvenido al Sistema</h1>
-        <ul class="space-y-4 text-center">
-        <li><a href="{% url 'usuarios:login' %}" class="text-blue-600 hover:underline">Usuarios</a></li>
-        <li><a href="{% url 'clientes:listar' %}" class="text-blue-600 hover:underline">Clientes</a></li>
-        <li><a href="{% url 'predicciones:entrenar_modelo' %}" class="text-blue-600 hover:underline">Predicciones</a></li>
-        <li><a href="{% url 'chatbot:inicio' %}" class="text-blue-600 hover:underline">Chatbot</a></li>
-        <li><a href="{% url 'dashboard:home' %}" class="text-blue-600 hover:underline">Dashboard</a></li>
-        <li><a href="/admin/" class="text-blue-600 hover:underline">Admin (Django)</a></li>
-    </ul>
+<!-- ========================== -->
+<!--   LAYOUT PRINCIPAL         -->
+<!-- ========================== -->
+<div class="flex min-h-screen">
 
-    </div>
+    <!-- ========================== -->
+    <!--   SIDEBAR / MENÚ LATERAL   -->
+    <!-- ========================== -->
+    <aside class="w-64 bg-white shadow-lg hidden md:block">
+        <div class="p-6">
+            <h2 class="text-xl font-bold mb-4">Menú</h2>
+
+            <!-- Navegación principal -->
+            <ul class="space-y-3">
+
+                <!-- Ir al login de usuarios -->
+                <li><a href="{% url 'usuarios:login' %}" class="text-blue-600 hover:underline">
+                    Usuarios
+                </a></li>
+
+                <!-- Lista de clientes -->
+                <li><a href="{% url 'clientes:listar' %}" class="text-blue-600 hover:underline">
+                    Clientes
+                </a></li>
+
+                <!-- Entrenar modelo -->
+                <li><a href="{% url 'predicciones:entrenar_modelo' %}" class="text-blue-600 hover:underline">
+                    Predicciones
+                </a></li>
+
+                <!-- Chatbot -->
+                <li><a href="{% url 'chatbot:inicio' %}" class="text-blue-600 hover:underline">
+                    Chatbot
+                </a></li>
+
+                <!-- Dashboard -->
+                <li><a href="{% url 'dashboard:home' %}" class="text-blue-600 hover:underline">
+                    Dashboard
+                </a></li>
+
+                <!-- Panel administrativo Django -->
+                <li><a href="/admin/" class="text-blue-600 hover:underline">
+                    Admin (Django)
+                </a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- ========================== -->
+    <!--   CONTENIDO PRINCIPAL      -->
+    <!-- ========================== -->
+    <main class="flex-1 p-6">
+
+        <!-- Título -->
+        <h1 class="text-2xl font-bold mb-6">Bienvenido al Sistema</h1>
+
+        <!-- ========================================= -->
+        <!--     TABLA DE CLIENTES (RESPONSIVE)        -->
+        <!-- ========================================= -->
+        <div class="overflow-x-auto mb-6">
+            <table class="min-w-full border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="px-4 py-2 border">Nombre</th>
+                        <th class="px-4 py-2 border">Apellido</th>
+                        <th class="px-4 py-2 border">Email</th>
+                        <th class="px-4 py-2 border">Teléfono</th>
+                        <th class="px-4 py-2 border">Dirección</th>
+                        <th class="px-4 py-2 border">Estado</th>
+                        <th class="px-4 py-2 border">Nivel de Riesgo</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Ciclo de clientes enviados desde la vista -->
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td class="px-4 py-2 border">{{ cliente.nombre }}</td>
+                        <td class="px-4 py-2 border">{{ cliente.apellido }}</td>
+                        <td class="px-4 py-2 border">{{ cliente.email }}</td>
+                        <td class="px-4 py-2 border">{{ cliente.telefono }}</td>
+                        <td class="px-4 py-2 border">{{ cliente.direccion }}</td>
+                        <td class="px-4 py-2 border">{{ cliente.estado }}</td>
+                        <td class="px-4 py-2 border">{{ cliente.nivel_riesgo }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ========================================= -->
+        <!--       FORMULARIO PARA AGREGAR CLIENTE      -->
+        <!-- ========================================= -->
+        <div class="max-w-md bg-white p-6 rounded shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">Agregar Cliente</h2>
+
+            <form method="POST" action="{% url 'clientes:crear' %}" class="space-y-4">
+                {% csrf_token %}
+
+                <input type="text" name="nombre" placeholder="Nombre"
+                       class="w-full border rounded px-2 py-1">
+
+                <input type="text" name="apellido" placeholder="Apellido"
+                       class="w-full border rounded px-2 py-1">
+
+                <input type="email" name="email" placeholder="Email"
+                       class="w-full border rounded px-2 py-1">
+
+                <button type="submit"
+                        class="bg-blue-600 text-white px-4 py-2 rounded">
+                    Guardar
+                </button>
+            </form>
+        </div>
+
+        <!-- ========================================= -->
+        <!--            CHATBOT INTEGRADO               -->
+        <!-- ========================================= -->
+        <div id="chatbot"
+             class="fixed bottom-4 right-4 w-80 bg-white border rounded shadow-lg p-4">
+
+            <!-- Aquí se muestran los mensajes -->
+            <div id="mensajes"
+                 class="h-64 overflow-y-auto mb-2 border p-2 rounded">
+            </div>
+
+            <!-- Formulario del chatbot -->
+            <form id="formChat">
+                <input type="text" id="inputPregunta"
+                       class="w-full border rounded px-2 py-1"
+                       placeholder="Escribe tu pregunta...">
+                <button type="submit" class="hidden">Enviar</button>
+            </form>
+        </div>
+
+        <!-- =============================== -->
+        <!--   SCRIPT DEL CHATBOT (AJAX)    -->
+        <!-- =============================== -->
+        <script>
+            const formChat = document.getElementById('formChat');
+            const inputPregunta = document.getElementById('inputPregunta');
+            const mensajes = document.getElementById('mensajes');
+
+            // Manejo del envío del chatbot
+            formChat.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const texto = inputPregunta.value.trim();
+                if (!texto) return;
+
+                // Mensaje del usuario
+                const userMsg = document.createElement('div');
+                userMsg.className = 'text-right text-blue-600';
+                userMsg.textContent = texto;
+                mensajes.appendChild(userMsg);
+
+                inputPregunta.value = '';
+
+                // Petición al backend
+                const response = await fetch("{% url 'chatbot:inicio' %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pregunta: texto })
+                });
+
+                const data = await response.json();
+
+                // Mostrar respuesta del bot
+                const botMsg = document.createElement('div');
+                botMsg.className = 'text-left text-gray-700';
+                botMsg.textContent = data.respuesta;
+                mensajes.appendChild(botMsg);
+
+                mensajes.scrollTop = mensajes.scrollHeight;
+            });
+        </script>
+
+    </main>
+</div>
 
 </body>
 </html>
