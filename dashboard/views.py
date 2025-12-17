@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 
 @login_required
 def home(request):
-    return render(request, 'dashboard/inicio.html')
+    return render(request, 'dashboard/index.html')
 
 class DashboardView(TemplateView):
-    template_name = 'dashboard/inicio.html'
+    template_name = 'dashboard/index.html'

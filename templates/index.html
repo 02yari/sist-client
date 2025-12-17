@@ -1,36 +1,51 @@
-<!-- Copia de index.html para servir como template Django -->
-<!--
-    Index central del sistema
-    Este archivo sirve como punto de entrada visual para navegar a las secciones principales del proyecto.
-    Cada enlace lleva a la página principal de la app correspondiente.
-    Útil para pruebas rápidas y para que el equipo entienda la estructura general.
--->
+<!-- templates/index.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Inicio - Sistema Central</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 40px; }
-        .container { background: #fff; border-radius: 8px; padding: 32px; max-width: 400px; margin: auto; box-shadow: 0 2px 8px #0001; }
-        h1 { text-align: center; }
-        ul { list-style: none; padding: 0; }
-        li { margin: 16px 0; }
-        a { text-decoration: none; color: #1976d2; font-size: 1.2em; }
-        a:hover { text-decoration: underline; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS -->
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>Bienvenido al Sistema</h1>
-        <ul>
-            <li><a href="/usuarios_list/">Usuarios</a></li>
-            <li><a href="/clientes/">Clientes</a></li>
-            <li><a href="/predicciones/">Predicciones</a></li>
-            <li><a href="/chatbot/">Chatbot</a></li>
-            <li><a href="/dashboard/">Dashboard</a></li>
-            <li><a href="/admin/">Admin (Django)</a></li>
+<body class="bg-gray-100 font-sans">
+
+    <div class="container mx-auto p-8 bg-white rounded shadow max-w-md mt-10">
+        <h1 class="text-center text-2xl font-bold mb-6">Bienvenido al Sistema</h1>
+        <ul class="space-y-4 text-center">
+            <li>
+                <a href="{% url 'usuarios:login' %}" class="text-blue-600 hover:underline">
+                    Usuarios
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'clientes:list' %}" class="text-blue-600 hover:underline">
+                    Clientes
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'predicciones:entrenar_modelo' %}" class="text-blue-600 hover:underline">
+                    Predicciones
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'chatbot:inicio' %}" class="text-blue-600 hover:underline">
+                    Chatbot
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dashboard:home' %}" class="text-blue-600 hover:underline">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/admin/" class="text-blue-600 hover:underline">
+                    Admin (Django)
+                </a>
+            </li>
         </ul>
     </div>
+
 </body>
 </html>
