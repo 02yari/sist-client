@@ -27,3 +27,6 @@ urlpatterns = [
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', include('dashboard.urls')),
 ]
+
+# sist_pred_client
+handler403 = 'sist_pred_client.views.custom_permission_denied'

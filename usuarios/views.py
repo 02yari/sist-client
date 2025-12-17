@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Usuario
 from .forms import UsuarioForm
 from .mixins import AdminRequiredMixin
-
+from .decorators import role_required
 
 class CustomLoginView(LoginView):
     template_name = 'usuarios/login.html'
@@ -57,6 +57,12 @@ class UsuarioUpdateView(LoginRequiredMixin, AdminRequiredMixin, UpdateView):
 
 
 class UsuarioDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
+    allowed_roles = ['admin']
     model = Usuario
     template_name = 'usuarios/usuario_confirm_delete.html'
     success_url = reverse_lazy('usuarios:listar')
+
+@login_required
+@role_required(roles=['admin'])
+def admin_dashboard(request):
+    return render(request, 'dashboard/admin.html')

@@ -5,3 +5,13 @@ class AdminRequiredMixin:
         if not request.user.is_authenticated or request.user.rol != 'admin':
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+class RoleRequiredMixin:
+    allowed_roles = []  # Lista de roles permitidos
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+        if request.user.rol not in self.allowed_roles:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)

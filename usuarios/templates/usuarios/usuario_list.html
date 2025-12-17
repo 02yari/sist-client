@@ -29,8 +29,9 @@
             <td class="p-2">{{ u.get_rol_display }}</td>
             <td class="p-2">
                 <a href="{% url 'usuarios:editar' u.id %}" class="text-blue-600">Editar</a>
-                |
+                {% if request.user.rol == 'admin' %}
                 <a href="{% url 'usuarios:eliminar' u.id %}" class="text-red-600">Eliminar</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
