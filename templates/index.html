@@ -1,0 +1,36 @@
+<!-- Copia de index.html para servir como template Django -->
+<!--
+    Index central del sistema
+    Este archivo sirve como punto de entrada visual para navegar a las secciones principales del proyecto.
+    Cada enlace lleva a la página principal de la app correspondiente.
+    Útil para pruebas rápidas y para que el equipo entienda la estructura general.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - Sistema Central</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 40px; }
+        .container { background: #fff; border-radius: 8px; padding: 32px; max-width: 400px; margin: auto; box-shadow: 0 2px 8px #0001; }
+        h1 { text-align: center; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 16px 0; }
+        a { text-decoration: none; color: #1976d2; font-size: 1.2em; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido al Sistema</h1>
+        <ul>
+            <li><a href="/usuarios/">Usuarios</a></li>
+            <li><a href="/clientes/">Clientes</a></li>
+            <li><a href="/predicciones/">Predicciones</a></li>
+            <li><a href="/chatbot/">Chatbot</a></li>
+            <li><a href="/dashboard/">Dashboard</a></li>
+            <li><a href="/admin/">Admin (Django)</a></li>
+        </ul>
+    </div>
+</body>
+</html>

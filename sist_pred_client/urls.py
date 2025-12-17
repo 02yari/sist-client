@@ -16,18 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.shortcuts import redirect
+
+from django.shortcuts import redirect, render
 
 # Función 'inicio' 
 def inicio(request):
     return redirect('usuarios:login')
 urlpatterns = [
-    path('', inicio, name='inicio'), 
+    path('', lambda request: render(request, 'index.html'), name='index'),
     path('admin/', admin.site.urls),
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('clientes/', include('clientes.urls')),
-
+    path('predicciones/', include('predicciones.urls')),
+    path('chatbot/', include('chatbot.urls')),
 ]
 
 # sist_pred_client

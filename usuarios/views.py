@@ -18,11 +18,11 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         user = self.request.user
-
+        # Si el usuario es admin, lo lleva al admin de Django
         if user.rol == 'admin':
             return reverse_lazy('admin:index')
-        else:
-            return reverse_lazy('dashboard:inicio')
+        # Para cualquier otro usuario, lo lleva al index central
+        return '/index.html'
 
 
 class CustomLogoutView(LogoutView):
