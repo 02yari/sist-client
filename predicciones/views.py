@@ -21,7 +21,9 @@ def entrenar_modelo(request):
     if request.user.rol != 'admin':
         return HttpResponseForbidden("No tienes permiso para entrenar el modelo")
 
+    
     # 1. Preparar dataset
+    
     clientes = Cliente.objects.all().values(
         'estado', 'nivel_riesgo', 'telefono'  # ajusta según tus features
     )
@@ -60,4 +62,46 @@ def entrenar_modelo(request):
         'accuracy': acc,
         'roc_auc': roc,
         'report': report
+    })
+
+
+@login_required
+def predecir_abandono(request, cliente_id):
+    if request.user.rol != 'admin':
+        return HttpResponseForbidden("No tienes permiso para hacer predicciones")
+    
+    try:
+        cliente = Cliente.objects.get(id=cliente_id)
+    except Cliente.DoesNotExist:
+        return JsonResponse({'error': 'Cliente no encontrado'}, status=404)
+
+    # Cargar modelo
+    try:
+        modelo = joblib.load('predicciones/modelo_cliente.pkl')
+    except FileNotFoundError:
+        return JsonResponse({'error': 'Modelo no entrenado'}, status=400)
+
+    # Preparar datos del cliente como dataframe
+    df = pd.DataFrame([{
+        'telefono': cliente.telefono,
+        'estado': cliente.estado,
+        'nivel_riesgo': cliente.nivel_riesgo,
+    }])
+
+    # Convertir variables categóricas igual que en entrenamiento
+    df = pd.get_dummies(df, columns=['estado', 'nivel_riesgo'], drop_first=True)
+
+    # Asegurarse que las columnas coincidan con el modelo
+    modelo_cols = modelo.feature_names_in_
+    for col in modelo_cols:
+        if col not in df.columns:
+            df[col] = 0
+    df = df[modelo_cols]
+
+    # Hacer predicción
+    probabilidad = modelo.predict_proba(df)[:, 1][0]
+
+    return JsonResponse({
+        'cliente': cliente.nombre,
+        'probabilidad_abandono': round(probabilidad * 100, 2)
     })
