@@ -39,12 +39,12 @@ class UsuarioListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
 class UsuarioCreateView(LoginRequiredMixin, AdminRequiredMixin, CreateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'usuarios/usuario_form.html'
+    template_name = 'usuarios/usuario_forms.html'
     success_url = reverse_lazy('usuarios:listar')
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.set_password('12345678')  # contraseña inicial
+        user.set_password('12345678')   # <-- aquí Django hace hashing automáticamente
         user.save()
         return super().form_valid(form)
 
