@@ -104,6 +104,8 @@ def cliente_create(request):
     if form.is_valid():
         form.save()
         return redirect('clientes:list')
+    else:
+        form = ClienteForm()
     return render(request, 'clientes/form.html', {'form': form})
 
 # Modificar cliente (solo admin)
