@@ -1,0 +1,51 @@
+<h1 class="text-2xl font-bold mb-4">Lista de Clientes</h1>
+
+{% if request.user.rol == 'admin' %}
+    <a href="{% url 'clientes:create' %}" class="bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">
+        Nuevo Cliente
+    </a>
+{% endif %}
+
+<table class="table-auto border-collapse border border-gray-300 w-full">
+    <thead>
+        <tr>
+            <th class="border border-gray-300 px-2">Nombre</th>
+            <th class="border border-gray-300 px-2">Email</th>
+            <th class="border border-gray-300 px-2">Teléfono</th>
+            <th class="border border-gray-300 px-2">Estado</th>
+            <th class="border border-gray-300 px-2">Nivel de Riesgo</th>
+            {% if request.user.rol == 'admin' %}
+                <th class="border border-gray-300 px-2">Acciones</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td class="border border-gray-300 px-2">{{ cliente.nombre }}</td>
+            <td class="border border-gray-300 px-2">{{ cliente.email }}</td>
+            <td class="border border-gray-300 px-2">{{ cliente.telefono }}</td>
+            <td class="border border-gray-300 px-2">{{ cliente.estado }}</td>
+            <td class="border border-gray-300 px-2">
+                {% if cliente.nivel_riesgo == "Bajo" %}
+                    <span class="text-green-600 font-semibold">{{ cliente.nivel_riesgo }}</span>
+                {% elif cliente.nivel_riesgo == "Medio" %}
+                    <span class="text-yellow-600 font-semibold">{{ cliente.nivel_riesgo }}</span>
+                {% else %}
+                    <span class="text-red-600 font-semibold">{{ cliente.nivel_riesgo }}</span>
+                {% endif %}
+            </td>
+            {% if request.user.rol == 'admin' %}
+            <td class="border border-gray-300 px-2">
+                <a href="{% url 'clientes:update' cliente.pk %}" class="text-blue-600">Editar</a> |
+                <a href="{% url 'clientes:delete' cliente.pk %}" class="text-red-600">Eliminar</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No hay clientes.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">
+    {% if object %}Editar Cliente{% else %}Nuevo Cliente{% endif %}
+</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if user.role == 'admin' %}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-2">
+        Guardar
+    </button>
+    {% else %}
+        <p>No tienes permiso para guardar cambios</p>
+    {% endif %}
+</form>
+
+<a href="{% url 'clientes:list' %}">Volver</a>
