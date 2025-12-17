@@ -17,11 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.shortcuts import redirect
+
+# Función 'inicio' 
 def inicio(request):
     return redirect('usuarios:login')
-
 urlpatterns = [
     path('', inicio, name='inicio'), 
     path('admin/', admin.site.urls),
-    path('', include('usuarios.urls')),
+    path('usuarios/', include('usuarios.urls')),
+    path('dashboard/', include('dashboard.urls')),
 ]
