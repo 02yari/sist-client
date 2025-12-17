@@ -26,6 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('clientes/', include('clientes.urls')),
+
 ]
 
 # sist_pred_client
