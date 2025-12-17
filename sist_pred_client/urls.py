@@ -15,8 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from django.shortcuts import redirect
 
+# Función 'inicio' 
+def inicio(request):
+    return redirect('usuarios:login')
 urlpatterns = [
+    path('', inicio, name='inicio'), 
     path('admin/', admin.site.urls),
+    path('usuarios/', include('usuarios.urls')),
+    path('dashboard/', include('dashboard.urls')),
 ]
+
+# sist_pred_client
+handler403 = 'sist_pred_client.views.custom_permission_denied'
