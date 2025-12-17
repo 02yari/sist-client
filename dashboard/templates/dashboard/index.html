@@ -1,6 +1,227 @@
-{% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - ChurnPredict Pro{% endblock %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block page_subtitle %}{{ page_subtitle }}{% endblock %}
+
 {% block content %}
-    <h2>Dashboard</h2>
-    <p>Resumen del sistema.</p>
+<div class="row">
+    <!-- Tarjeta 1: Total Clientes -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Clientes Totales
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ estadisticas.clientes_totales|default:"0" }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta 2: Predicciones Hoy -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Predicciones Hoy
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ estadisticas.predicciones_hoy|default:"0" }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta 3: Clientes en Riesgo -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Clientes en Riesgo Alto
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ estadisticas.riesgo_alto|default:"0" }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta 4: Satisfacción -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Nivel de Satisfacción
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ estadisticas.satisfaccion|default:"0" }}%
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-smile fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráficos y Tablas -->
+<div class="row">
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Tendencia de Abandono</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="tendenciaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Distribución de Riesgo</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4">
+                    <canvas id="riesgoChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> Alto Riesgo
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> Riesgo Medio
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i> Bajo Riesgo
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Últimas Predicciones -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Últimas Predicciones</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Score de Riesgo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cliente Ejemplo 1</td>
+                        <td>2025-12-16</td>
+                        <td>
+                            <span class="badge badge-danger">85%</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-warning">En Revisión</span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <!-- Más filas aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Gráfico de tendencia
+const ctxLine = document.getElementById('tendenciaChart').getContext('2d');
+const tendenciaChart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        datasets: [{
+            label: 'Tasa de Abandono (%)',
+            data: [12, 19, 15, 25, 22, 18, 24, 20, 17, 22, 25, 28],
+            borderColor: '#4361ee',
+            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+            }
+        }
+    }
+});
+
+// Gráfico de dona para riesgo
+const ctxDona = document.getElementById('riesgoChart').getContext('2d');
+const riesgoChart = new Chart(ctxDona, {
+    type: 'doughnut',
+    data: {
+        labels: ['Alto Riesgo', 'Riesgo Medio', 'Bajo Riesgo'],
+        datasets: [{
+            data: [18, 35, 47],
+            backgroundColor: ['#f72585', '#ff9e00', '#4cc9f0'],
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+            }
+        }
+    }
+});
+</script>
 {% endblock %}
