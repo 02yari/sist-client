@@ -1,0 +1,40 @@
+<div id="chatbot" class="fixed bottom-4 right-4 w-80 bg-white border rounded shadow-lg p-4">
+    <div id="mensajes" class="h-64 overflow-y-auto mb-2 border p-2 rounded"></div>
+    <form id="formChat">
+        <input type="text" id="inputPregunta" class="w-full border rounded px-2 py-1" placeholder="Escribe tu pregunta...">
+        <button type="submit" class="hidden">Enviar</button>
+    </form>
+</div>
+
+<script>
+const formChat = document.getElementById('formChat');
+const inputPregunta = document.getElementById('inputPregunta');
+const mensajes = document.getElementById('mensajes');
+
+formChat.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const texto = inputPregunta.value.trim();
+    if(!texto) return;
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'text-right text-blue-600';
+    userMsg.textContent = texto;
+    mensajes.appendChild(userMsg);
+
+    inputPregunta.value = '';
+
+    const response = await fetch("{% url 'chatbot' %}", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({pregunta: texto})
+    });
+    const data = await response.json();
+
+    const botMsg = document.createElement('div');
+    botMsg.className = 'text-left text-gray-700';
+    botMsg.textContent = data.respuesta;
+    mensajes.appendChild(botMsg);
+
+    mensajes.scrollTop = mensajes.scrollHeight;
+});
+</script>
