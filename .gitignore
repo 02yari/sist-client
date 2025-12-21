@@ -1,0 +1,56 @@
+# ===============================
+# Django
+# ===============================
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+
+# ===============================
+# Python / Virtualenv
+# ===============================
+env/
+venv/
+.venv/
+ENV/
+pip-wheel-metadata/
+
+# ===============================
+# VS Code / IDEs
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===============================
+# OS files
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Static files (collectstatic)
+# ===============================
+staticfiles/
+
+# ===============================
+# Environment variables
+# ===============================
+.env
+.env.*
+
+# ===============================
+# Jupyter / ML (por si usas notebooks)
+# ===============================
+.ipynb_checkpoints/
+
+# ===============================
+# Node / frontend (si usas Tailwind con npm)
+# ===============================
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn.lock

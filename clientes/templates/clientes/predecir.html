@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Predicción de Churn{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Predicción de Churn</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    {% if clientes %}
+                    <form method="post" class="row g-3">
+                        {% csrf_token %}
+                        <div class="col-12">
+                            <label for="email" class="form-label fw-bold">Selecciona un cliente</label>
+                            <select name="email" id="email" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>-- Elige un cliente --</option>
+                                {% for cliente in clientes %}
+                                    <option value="{{ cliente.email }}">{{ cliente.nombre }} - {{ cliente.email }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 text-center mt-3">
+                            <button type="submit" class="btn btn-primary btn-lg w-50">Predecir Churn</button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <p class="text-danger text-center">No hay clientes disponibles para tu empresa.</p>
+                    {% endif %}
+
+                    {% if resultado is not None %}
+                    <div class="mt-4 p-4 border rounded bg-light shadow-sm text-center">
+                        <h4 class="mb-3">Resultado de la Predicción</h4>
+                        <p class="fs-5">
+                            {% if resultado == 1 %}
+                                Cliente <span class="badge bg-success">ACTIVO</span>
+                            {% else %}
+                                Cliente <span class="badge bg-danger">EN RIESGO DE CHURN</span>
+                            {% endif %}
+                        </p>
+                        <p class="fw-bold">Probabilidad: <span class="text-primary">{{ probabilidad|floatformat:2 }}%</span></p>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS adicional opcional para mejorar visual -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    button.btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+</style>
+{% endblock %}

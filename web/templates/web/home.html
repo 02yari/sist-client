@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Bienvenido a Nuestra Empresa</h1>
+    <p class="lead text-center">Ofrecemos servicios para predecir el abandono de clientes (churn) y mejorar la gestión empresarial.</p>
+
+    <div class="text-center my-4">
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg mx-2">Iniciar Sesión</a>
+        <a href="{% url 'registro_empresa' %}" class="btn btn-success btn-lg mx-2">Registrarse / Comprar Servicio</a>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Predicción de Churn</h5>
+                    <p class="card-text">Analiza el riesgo de abandono de tus clientes y toma decisiones a tiempo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Gestión de Clientes</h5>
+                    <p class="card-text">Mantén todos tus clientes organizados y accede a reportes detallados.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Soporte y Consultoría</h5>
+                    <p class="card-text">Recibe asistencia personalizada y recomendaciones de expertos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

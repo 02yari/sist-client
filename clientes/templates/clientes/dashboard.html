@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Dashboard de Clientes</h2>
+
+    <div class="row g-4">
+        <!-- Total Clientes -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Clientes</h5>
+                    <p class="card-text fs-2">{{ total_clientes }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clientes Activos -->
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Clientes Activos</h5>
+                    <p class="card-text fs-2">{{ clientes_activos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clientes en Riesgo -->
+        <div class="col-md-3">
+            <div class="card text-white bg-danger shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Clientes en Riesgo</h5>
+                    <p class="card-text fs-2">{{ clientes_en_riesgo }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- % Churn Esperado -->
+        <div class="col-md-3">
+            <div class="card text-white bg-warning shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">% Churn Esperado</h5>
+                    <p class="card-text fs-2">{{ porcentaje_churn }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Riesgo por Antigüedad (meses)</h5>
+                    <canvas id="chartAntiguedad"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Riesgo por Frecuencia de Uso</h5>
+                    <canvas id="chartFrecuencia"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Guardamos los datos en etiquetas script tipo JSON -->
+<script type="application/json" id="meses-data">{{ meses|json_script:"meses" }}</script>
+<script type="application/json" id="riesgo-antiguedad-data">{{ riesgo_por_antiguedad|json_script:"riesgo_antiguedad" }}</script>
+<script type="application/json" id="riesgo-frecuencia-data">{{ riesgo_por_frecuencia|json_script:"riesgo_frecuencia" }}</script>
+
+<script>
+    // Recuperamos los datos desde JSON
+    const meses = JSON.parse(document.getElementById('meses-data').textContent);
+    const riesgoPorAntiguedad = JSON.parse(document.getElementById('riesgo-antiguedad-data').textContent);
+    const riesgoPorFrecuencia = JSON.parse(document.getElementById('riesgo-frecuencia-data').textContent);
+
+    const ctx1 = document.getElementById('chartAntiguedad').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Clientes en riesgo',
+                data: riesgoPorAntiguedad,
+                backgroundColor: 'rgba(220,53,69,0.7)',
+                borderColor: 'rgba(220,53,69,1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    const ctx2 = document.getElementById('chartFrecuencia').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Clientes en riesgo',
+                data: riesgoPorFrecuencia,
+                backgroundColor: 'rgba(255,193,7,0.7)',
+                borderColor: 'rgba(255,193,7,1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
