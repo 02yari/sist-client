@@ -462,16 +462,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // En escritorio: colapsar
             sidebar.classList.toggle('collapsed');
-
-            if (mainContent) {
-                if (sidebar.classList.contains('collapsed')) {
-                    mainContent.style.marginLeft = '70px';
-                    mainContent.style.width = 'calc(100% - 70px)';
-                } else {
-                    mainContent.style.marginLeft = '260px';
-                    mainContent.style.width = 'calc(100% - 260px)';
-                }
-            }
         });
 
         // Cerrar sidebar al hacer clic fuera (solo en móviles)

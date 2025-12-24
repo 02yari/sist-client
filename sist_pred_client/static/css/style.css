@@ -80,6 +80,45 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
 }
 
+/* Colapsado en escritorio: la sidebar realmente reduce su ancho */
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+}
+
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .nav-link span,
+.sidebar.collapsed .nav-link .badge,
+.sidebar.collapsed .user-info {
+    display: none;
+}
+
+.sidebar.collapsed .brand {
+    justify-content: center;
+}
+
+.sidebar.collapsed .brand-icon {
+    margin-right: 0;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: center;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
+}
+
+/* Offset del contenido principal según el estado de la sidebar */
+.sidebar ~ .main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: var(--sidebar-collapsed);
+    width: calc(100% - var(--sidebar-collapsed));
+}
+
 .sidebar-header {
     padding: 20px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -357,8 +396,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== CONTENIDO PRINCIPAL ===== */
 .main-content {
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
+    margin-left: 0;
+    width: 100%;
     min-height: 100vh;
     background: #f5f7fb;
     transition: all var(--transition-speed);
@@ -752,6 +791,12 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar ~ .main-content,
+    .sidebar.collapsed ~ .main-content {
         margin-left: 0;
         width: 100%;
     }
