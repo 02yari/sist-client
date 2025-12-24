@@ -74,7 +74,7 @@ h1, h2, h3, h4, h5, h6 {
     top: 0;
     height: 100vh;
     z-index: 1000;
-    transition: all var(--transition-speed);
+    transition: width var(--transition-speed), transform var(--transition-speed);
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
@@ -193,6 +193,19 @@ h1, h2, h3, h4, h5, h6 {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) rgba(255,255,255,0.1);
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.08);
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 9999px;
 }
 
 .nav {
@@ -400,7 +413,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     min-height: 100vh;
     background: #f5f7fb;
-    transition: all var(--transition-speed);
+    transition: margin-left var(--transition-speed), width var(--transition-speed);
     display: flex;
     flex-direction: column;
 }

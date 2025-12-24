@@ -172,7 +172,7 @@ def calcular_nivel_riesgo(request, cliente_id):
     df = df[modelo_cols]
 
     # Predicción
-    probabilidad = modelo.predict_proba(df)[:, 1][0]
+    probabilidad = float(modelo.predict_proba(df)[:, 1][0])
 
     # Calcular nivel de riesgo
     if probabilidad < 0.3:
@@ -182,7 +182,8 @@ def calcular_nivel_riesgo(request, cliente_id):
     else:
         nivel = "Alto"
 
-    # Guardar en el cliente (opcional)
+    # Guardar en el cliente (para listado/orden por probabilidad)
+    cliente.probabilidad_abandono = probabilidad
     cliente.nivel_riesgo = nivel
     cliente.save()
 

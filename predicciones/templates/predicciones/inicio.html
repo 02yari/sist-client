@@ -9,6 +9,8 @@
   <div class="card-body">
     <p class="text-muted">Página de predicciones (MVP). Selecciona un cliente para generar una predicción.</p>
 
+    <div id="prediccion-alert" class="alert d-none" role="alert"></div>
+
     <div class="table-responsive">
       <table class="table table-striped mb-0">
         <thead>
@@ -24,7 +26,12 @@
               <td>{{ c.nombre }} {{ c.apellido }}</td>
               <td>{{ c.email }}</td>
               <td class="text-end">
-                <a class="btn btn-sm btn-primary" href="#">Predecir</a>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary btn-predecir"
+                  data-url="{% url 'predicciones:calcular_riesgo' c.id %}">
+                  Predecir
+                </button>
               </td>
             </tr>
           {% empty %}
@@ -35,4 +42,46 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const alertEl = document.getElementById('prediccion-alert');
+    const buttons = document.querySelectorAll('.btn-predecir');
+
+    function showAlert(kind, text) {
+      alertEl.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning', 'alert-info');
+      alertEl.classList.add('alert-' + kind);
+      alertEl.textContent = text;
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const url = btn.getAttribute('data-url');
+        if (!url) return;
+
+        btn.disabled = true;
+        try {
+          const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+          const data = await res.json();
+
+          if (!res.ok) {
+            showAlert('danger', data.error || 'No se pudo calcular el riesgo');
+            return;
+          }
+
+          const cliente = data.cliente || 'Cliente';
+          const prob = data.probabilidad_abandono;
+          const nivel = data.nivel_riesgo;
+          showAlert('success', `${cliente}: ${nivel} (${prob}% prob. abandono)`);
+        } catch (e) {
+          showAlert('danger', 'Error de red al calcular el riesgo');
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+  })();
+</script>
 {% endblock %}

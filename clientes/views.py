@@ -59,6 +59,35 @@ def importar_clientes(request):
                     continue
 
                 # Guardar cliente
+                raw_riesgo = row.get('nivel_riesgo', '')
+                nivel_riesgo = 'Bajo'
+                probabilidad_abandono = 0.0
+
+                if raw_riesgo is not None:
+                    raw_riesgo_str = str(raw_riesgo).strip()
+                    raw_riesgo_norm = raw_riesgo_str.lower()
+
+                    if raw_riesgo_norm in {'bajo', 'medio', 'alto'}:
+                        nivel_riesgo = raw_riesgo_norm.capitalize()
+                    else:
+                        try:
+                            val = float(raw_riesgo_str)
+                            # Acepta probabilidad 0..1 o porcentaje 0..100
+                            probabilidad_abandono = val / 100.0 if val > 1 else val
+                            if probabilidad_abandono < 0:
+                                probabilidad_abandono = 0.0
+                            if probabilidad_abandono > 1:
+                                probabilidad_abandono = 1.0
+
+                            if probabilidad_abandono < 0.3:
+                                nivel_riesgo = 'Bajo'
+                            elif probabilidad_abandono < 0.6:
+                                nivel_riesgo = 'Medio'
+                            else:
+                                nivel_riesgo = 'Alto'
+                        except (TypeError, ValueError):
+                            pass
+
                 Cliente.objects.create(
                     nombre=nombre,
                     apellido=apellido,
@@ -66,7 +95,8 @@ def importar_clientes(request):
                     telefono=row.get('telefono', ''),
                     direccion=row.get('direccion', ''),
                     estado=row.get('estado', 'activo'),
-                    nivel_riesgo=row.get('nivel_riesgo', 0.0)
+                    nivel_riesgo=nivel_riesgo,
+                    probabilidad_abandono=probabilidad_abandono,
                 )
 
             if errores:
@@ -132,17 +162,17 @@ class ClienteCreateView(CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'clientes/form.html'
-    success_url = reverse_lazy('clientes:list')
+    success_url = reverse_lazy('clientes:index')
 
 @method_decorator(login_required, name='dispatch')
 class ClienteUpdateView(UpdateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'clientes/form.html'
-    success_url = reverse_lazy('clientes:list')
+    success_url = reverse_lazy('clientes:index')
 
 @method_decorator(login_required, name='dispatch')
 class ClienteDeleteView(DeleteView):
     model = Cliente
     template_name = 'clientes/confirm_delete.html'
-    success_url = reverse_lazy('clientes:list')
+    success_url = reverse_lazy('clientes:index')
