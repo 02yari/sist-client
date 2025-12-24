@@ -1,3 +1,5 @@
+\# SIST-CLIENT-MAIN
+
 git clone https://github.com/02yari/sist-client.git
 Crear entorno virtual: python -m venv venv, venv\Scripts\activate
 Instalar dependencias: pip install -r requirements.txt
