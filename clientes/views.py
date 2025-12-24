@@ -115,8 +115,49 @@ def importar_clientes(request):
 @login_required
 @role_required(roles=['admin', 'analista'])
 def clientes_list(request):
-    clientes = Cliente.objects.all()
-    return render(request, 'clientes/list.html', {'clientes': clientes})
+    riesgo = (request.GET.get('riesgo') or '').strip()
+    orden = (request.GET.get('orden') or '').strip()
+
+    clientes_qs = Cliente.objects.all()
+    if riesgo in {'Bajo', 'Medio', 'Alto'}:
+        clientes_qs = clientes_qs.filter(nivel_riesgo=riesgo)
+
+    if orden == 'prob_asc':
+        clientes_qs = clientes_qs.order_by('probabilidad_abandono', 'apellido', 'nombre')
+    elif orden == 'prob_desc':
+        clientes_qs = clientes_qs.order_by('-probabilidad_abandono', 'apellido', 'nombre')
+    elif orden == 'nombre':
+        clientes_qs = clientes_qs.order_by('apellido', 'nombre')
+
+    clientes = list(clientes_qs)
+    for c in clientes:
+        try:
+            c.probabilidad_pct = round(float(c.probabilidad_abandono or 0.0) * 100.0, 1)
+        except (TypeError, ValueError):
+            c.probabilidad_pct = 0.0
+
+    total_clientes = Cliente.objects.count()
+    total_alto = Cliente.objects.filter(nivel_riesgo='Alto').count()
+    total_medio = Cliente.objects.filter(nivel_riesgo='Medio').count()
+    total_bajo = Cliente.objects.filter(nivel_riesgo='Bajo').count()
+    total_activos = Cliente.objects.filter(estado='activo').count()
+
+    return render(
+        request,
+        'clientes/list.html',
+        {
+            'clientes': clientes,
+            'filtro_riesgo': riesgo,
+            'orden': orden,
+            'stats': {
+                'total_clientes': total_clientes,
+                'total_alto': total_alto,
+                'total_medio': total_medio,
+                'total_bajo': total_bajo,
+                'total_activos': total_activos,
+            },
+        },
+    )
 
 @login_required
 @role_required(roles=['admin'])

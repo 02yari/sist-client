@@ -59,10 +59,12 @@ def inicio(request):
     total_usuarios_activos = User.objects.filter(is_active=True).count()
 
     total_predicciones = None
+    predicciones_hoy = 0
     ultimas_predicciones = []
     try:
         _, Prediccion = _get_predicciones_models()
         total_predicciones = Prediccion.objects.count()
+        predicciones_hoy = Prediccion.objects.filter(fecha_prediccion__date=hoy).count()
         ultimas_predicciones = list(
             Prediccion.objects.select_related('cliente')
             .order_by('-fecha_prediccion')[:5]
@@ -70,9 +72,14 @@ def inicio(request):
     except OperationalError:
         # Tablas no disponibles (p.ej. migraciones no aplicadas en esa app)
         total_predicciones = None
+        predicciones_hoy = 0
         ultimas_predicciones = []
 
     context = {
+        'estadisticas': {
+            'clientes_totales': total_clientes,
+            'predicciones_hoy': predicciones_hoy,
+        },
         'total_clientes': total_clientes,
         'total_usuarios_activos': total_usuarios_activos,
         'total_predicciones': total_predicciones,
