@@ -1,11 +1,20 @@
 from django.urls import path
-from . import views
+from .views import CustomLoginView, CustomLogoutView
 
+
+from .views import (
+    UsuarioListView,
+    UsuarioCreateView,
+    UsuarioUpdateView,
+    UsuarioDeleteView,
+)
 app_name = 'usuarios'
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('lista/', views.lista_usuarios, name='lista'),
-    path('perfil/', views.perfil, name='perfil'),
-    path('configuracion/', views.configuracion, name='configuracion'),
-    path('permisos/', views.permisos, name='permisos'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('', UsuarioListView.as_view(), name='index'),
+    path('', UsuarioListView.as_view(), name='listar'),
+    path('crear/', UsuarioCreateView.as_view(), name='crear'),
+    path('editar/<int:pk>/', UsuarioUpdateView.as_view(), name='editar'),
+    path('eliminar/<int:pk>/', UsuarioDeleteView.as_view(), name='eliminar'),
 ]

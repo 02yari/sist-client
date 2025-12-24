@@ -186,10 +186,15 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
 }
 
+.nav-link:focus-visible {
+    outline: 3px solid rgba(67, 97, 238, 0.35);
+    outline-offset: 2px;
+}
+
 .nav-link:hover {
     background: rgba(255,255,255,0.1);
     color: white;
-    transform: translateX(5px);
+    transform: translateX(3px);
 }
 
 .nav-link.active {
@@ -197,6 +202,18 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
     border-left: 4px solid var(--primary-color);
     font-weight: 500;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-50%);
 }
 
 .nav-link i {
@@ -222,6 +239,21 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 25px;
     text-align: center;
     transition: all 0.3s;
+    margin-left: auto;
+}
+
+/* Scrollbar del sidebar (mejor UX) */
+.sidebar-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.06);
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: rgba(67, 97, 238, 0.35);
+    border-radius: 9999px;
 }
 
 .nav-link .badge.bg-success {
@@ -363,6 +395,20 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
+}
+
+@media (max-width: 992px) {
+    .topbar-actions {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+        order: 3;
+    }
 }
 
 .btn-notification {
