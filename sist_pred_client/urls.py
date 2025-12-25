@@ -30,7 +30,6 @@ urlpatterns = [
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('clientes/', include('clientes.urls')),
-
     path('predicciones/', include('predicciones.urls')),
     path('chatbot/', include('chatbot.urls')),
 

@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect
 from clientes.models import Cliente
-
+from django.shortcuts import redirect
 
 @login_required
 def home(request):
@@ -215,3 +215,6 @@ def calcular_nivel_riesgo(request, cliente_id):
         'probabilidad_abandono': round(probabilidad*100,2),
         'nivel_riesgo': nivel
     })
+def index(request):
+    """Redirige automáticamente a Streamlit"""
+    return redirect('http://localhost:8501')

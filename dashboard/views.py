@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import OperationalError
 from django.db import models
+from predicciones.models import Prediccion
 from django.shortcuts import render
 from django.utils import timezone
 
