@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Chatbot{% endblock %}
+
+{% block content %}
+<div class="chatbot-section">
+    <h2>Chatbot</h2>
+    <div class="chatbot-container">
+        <div class="chat-messages">
+            <p><strong>Bot:</strong> ¡Hola! ¿En qué puedo ayudarte?</p>
+        </div>
+        <input type="text" placeholder="Escribe tu mensaje..." class="chat-input">
+        <button class="chat-send">Enviar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.querySelector(".chat-send");
+    const input = document.querySelector(".chat-input");
+    const chat = document.querySelector(".chat-messages");
+
+    btn.addEventListener("click", function () {
+        const mensaje = input.value.trim();
+        if (!mensaje) return;
+
+        chat.innerHTML += `<p><strong>Tú:</strong> ${mensaje}</p>`;
+        input.value = "";
+
+        fetch(`/chatbot/api/chat/?mensaje=${encodeURIComponent(mensaje)}`)
+            .then(res => res.json())
+            .then(data => {
+                chat.innerHTML += `<p><strong>Bot:</strong> ${data.respuesta}</p>`;
+            })
+            .catch(() => {
+                chat.innerHTML += `<p><strong>Bot:</strong> Error al comunicarse con el servidor</p>`;
+            });
+    });
+});
+</script>
+{% endblock %}
