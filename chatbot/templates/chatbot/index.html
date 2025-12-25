@@ -2,41 +2,73 @@
 {% block title %}Chatbot{% endblock %}
 
 {% block content %}
-<div class="chatbot-section">
-    <h2>Chatbot</h2>
-    <div class="chatbot-container">
-        <div class="chat-messages">
-            <p><strong>Bot:</strong> ¡Hola! ¿En qué puedo ayudarte?</p>
+    <div class="chatbot-section">
+        <h2>Chatbot</h2>
+        <div class="chatbot-container">
+            <div class="chat-messages" id="chatMessages">
+                <p><strong>Bot:</strong> ¡Hola! ¿En qué puedo ayudarte?</p>
+            </div>
+            <input type="text" placeholder="Escribe tu mensaje..." class="chat-input" id="chatInput" autocomplete="off">
+            <button class="chat-send" id="chatSend">Enviar</button>
         </div>
         <input type="text" placeholder="Escribe tu mensaje..." class="chat-input">
         <button class="chat-send">Enviar</button>
     </div>
-</div>
-{% endblock %}
 
-{% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const btn = document.querySelector(".chat-send");
-    const input = document.querySelector(".chat-input");
-    const chat = document.querySelector(".chat-messages");
+    <script>
+        (function () {
+            const messagesEl = document.getElementById('chatMessages');
+            const inputEl = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSend');
+            const endpoint = "{% url 'chatbot:api_chat' %}";
 
-    btn.addEventListener("click", function () {
-        const mensaje = input.value.trim();
-        if (!mensaje) return;
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return '';
+            }
 
-        chat.innerHTML += `<p><strong>Tú:</strong> ${mensaje}</p>`;
-        input.value = "";
+            function appendMessage(who, text) {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${who}:</strong> ${text}`;
+                messagesEl.appendChild(p);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
 
-        fetch(`/chatbot/api/chat/?mensaje=${encodeURIComponent(mensaje)}`)
-            .then(res => res.json())
-            .then(data => {
-                chat.innerHTML += `<p><strong>Bot:</strong> ${data.respuesta}</p>`;
-            })
-            .catch(() => {
-                chat.innerHTML += `<p><strong>Bot:</strong> Error al comunicarse con el servidor</p>`;
+            async function sendMessage() {
+                const msg = (inputEl.value || '').trim();
+                if (!msg) return;
+                inputEl.value = '';
+                appendMessage('Tú', msg);
+
+                try {
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({ message: msg })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        appendMessage('Bot', data.reply || data.error || 'Ocurrió un error.');
+                        return;
+                    }
+                    appendMessage('Bot', data.reply || '...');
+                } catch (e) {
+                    appendMessage('Bot', 'No pude conectar con el servidor.');
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+            inputEl.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage();
+                }
             });
-    });
-});
-</script>
+        })();
+    </script>
 {% endblock %}
