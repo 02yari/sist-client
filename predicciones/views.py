@@ -135,7 +135,10 @@ def predecir_abandono(request, cliente_id):
     cliente.save()
 
     # Volver al dashboard (NO JSON)
-    return redirect('dashboard:inicio')
+    return JsonResponse({
+    'cliente': cliente.nombre,
+    'probabilidad_abandono': round(probabilidad * 100, 2)
+})
 
 @login_required
 def calcular_nivel_riesgo(request, cliente_id):
