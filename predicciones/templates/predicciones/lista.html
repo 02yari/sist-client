@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historias</title>
+</head>
+<body>
+
+<h1>📋 Historias para estimar</h1>
+
+<ul>
+    {% for historia in historias %}
+        <li>
+            <a href="/predicciones/{{ historia.id }}/">
+                {{ historia.titulo }}
+            </a>
+        </li>
+    {% empty %}
+        <li>No hay historias</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

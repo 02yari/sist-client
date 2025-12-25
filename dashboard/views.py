@@ -6,7 +6,7 @@ from functools import lru_cache
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import OperationalError
-from django.db import models
+from predicciones.models import Prediccion
 from django.shortcuts import render
 from django.utils import timezone
 
@@ -14,37 +14,7 @@ from clientes.models import Cliente
 
 
 @lru_cache(maxsize=1)
-def _get_predicciones_models():
-    class PrediccionesCliente(models.Model):
-        nombre = models.CharField(max_length=100)
-        email = models.EmailField()
 
-        class Meta:
-            managed = False
-            db_table = 'predicciones_cliente'
-            app_label = 'predicciones'
-
-        def __str__(self) -> str:  # pragma: no cover
-            return self.nombre
-
-    class Prediccion(models.Model):
-        fecha_prediccion = models.DateTimeField()
-        algoritmo_usado = models.CharField(max_length=50)
-        probabilidad_churn = models.FloatField()
-        nivel_riesgo = models.CharField(max_length=10)
-        cliente = models.ForeignKey(
-            PrediccionesCliente,
-            on_delete=models.DO_NOTHING,
-            db_column='cliente_id',
-            related_name='+',
-        )
-
-        class Meta:
-            managed = False
-            db_table = 'predicciones_prediccion'
-            app_label = 'predicciones'
-
-    return PrediccionesCliente, Prediccion
 
 
 @login_required
@@ -61,11 +31,9 @@ def inicio(request):
     total_predicciones = None
     ultimas_predicciones = []
     try:
-        _, Prediccion = _get_predicciones_models()
         total_predicciones = Prediccion.objects.count()
         ultimas_predicciones = list(
-            Prediccion.objects.select_related('cliente')
-            .order_by('-fecha_prediccion')[:5]
+            Prediccion.objects.all().order_by('-fecha')[:5]
         )
     except OperationalError:
         # Tablas no disponibles (p.ej. migraciones no aplicadas en esa app)
@@ -101,3 +69,8 @@ def reportes(request):
 
 # Backwards-compatible alias (si ya se estaba importando en otras partes)
 home = inicio
+
+from django.shortcuts import render
+
+def dashboard_index(request):
+    return render(request, 'dashboard/index.html')

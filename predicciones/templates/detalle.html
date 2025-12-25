@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Predicción</title>
+</head>
+<body>
+
+<h1>{{ historia.titulo }}</h1>
+<p>{{ historia.descripcion }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button name="valor" value="1">1</button>
+    <button name="valor" value="2">2</button>
+    <button name="valor" value="3">3</button>
+    <button name="valor" value="5">5</button>
+    <button name="valor" value="8">8</button>
+</form>
+
+<h2>📊 Predicciones</h2>
+
+<ul>
+    {% for p in predicciones %}
+        <li>{{ p.valor }}</li>
+    {% empty %}
+        <li>No hay votos aún</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
